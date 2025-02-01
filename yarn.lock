@@ -840,6 +840,13 @@
   resolved "https://registry.yarnpkg.com/@mui/core-downloads-tracker/-/core-downloads-tracker-5.16.14.tgz#e6536f1b6caa873f7915fbf9703fdc840a5a98d9"
   integrity sha512-sbjXW+BBSvmzn61XyTMun899E7nGPTXwqD9drm1jBUAvWEhJpPFIRxwQQiATWZnd9rvdxtnhhdsDxEGWI0jxqA==
 
+"@mui/icons-material@^6.4.2":
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-6.4.2.tgz#21fc2a944b83cb3901e966ad32ee35e548d54c11"
+  integrity sha512-uwsH1KRmxkJwK3NZyo1xL9pEduL16ftCnzYBYjd6nPNtm05QAoIc0aqedS9tqDV+Ab3q5C04HHOVsMDDv1EBpg==
+  dependencies:
+    "@babel/runtime" "^7.26.0"
+
 "@mui/lab@5.0.0-alpha.170":
   version "5.0.0-alpha.170"
   resolved "https://registry.yarnpkg.com/@mui/lab/-/lab-5.0.0-alpha.170.tgz#4519dfc8d1c51ca54fb9d8b91b95a3733d07be16"
@@ -4752,6 +4759,13 @@ react-is@^19.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.0.0.tgz#d6669fd389ff022a9684f708cf6fa4962d1fea7a"
   integrity sha512-H91OHcwjZsbq3ClIDHMzBShc1rotbfACdWENsmEf0IFvZ3FgGPtdHMcsv45bQ1hAbgdfiA8SnxTKfDS+x/8m2g==
 
+react-toastify@^11.0.3:
+  version "11.0.3"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-11.0.3.tgz#1684de60baf745e761d3c608bb29581657e2fe01"
+  integrity sha512-cbPtHJPfc0sGqVwozBwaTrTu1ogB9+BLLjd4dDXd863qYLj7DGrQ2sg5RAChjFUB4yc3w8iXOtWcJqPK/6xqRQ==
+  dependencies:
+    clsx "^2.1.1"
+
 react-transition-group@^4.4.5:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
@@ -5213,6 +5227,7 @@ string-length@^4.0.1:
     strip-ansi "^6.0.0"
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -5807,6 +5822,7 @@ word-wrap@^1.2.5:
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

@@ -6,7 +6,7 @@ import { useColorScheme } from '@mui/material/styles';
 
 import { NoSsr } from '@/components/core/no-ssr';
 
-const HEIGHT = 60;
+const HEIGHT = 80;
 const WIDTH = 60;
 
 type Color = 'dark' | 'light';
@@ -22,12 +22,24 @@ export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }:
   let url: string;
 
   if (emblem) {
-    url = color === 'light' ? '/assets/logo-emblem.svg' : '/assets/logo-emblem--dark.svg';
+    url = color === 'light' ? '/assets/logo2.png' : '/assets/logo2.png';
   } else {
-    url = color === 'light' ? '/assets/logo.svg' : '/assets/logo--dark.svg';
+    url = color === 'light' ? '/assets/logo2.png' : '/assets/logo2.png';
   }
 
-  return <Box alt="logo" component="img" height={height} src={url} width={width} />;
+  return <Box
+  alt="logo"
+  component="img"
+  height={80}
+  src={url}
+  width={width}
+  sx={{
+    display: "flex",
+    justifyContent: "center", // Centraliza horizontalmente
+    alignItems: "center", // Opcional: centraliza verticalmente se necessário
+    margin: "0 auto", // Outra forma de garantir a centralização horizontal
+  }}
+/>
 }
 
 export interface DynamicLogoProps {

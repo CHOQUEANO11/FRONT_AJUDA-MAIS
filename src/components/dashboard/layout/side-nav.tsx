@@ -73,7 +73,7 @@ export function SideNav(): React.JSX.Element {
               Devias
             </Typography>
           </Box> */}
-          <CaretUpDownIcon />
+          {/* <CaretUpDownIcon /> */}
         </Box>
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />

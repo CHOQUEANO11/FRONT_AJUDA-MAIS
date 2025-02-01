@@ -138,16 +138,16 @@ export function SignInForm(): React.JSX.Element {
           </Button>
         </Stack>
       </form>
-      <Alert color="warning">
+      {/* <Alert color="warning">
         Use{' '}
         <Typography component="span" sx={{ fontWeight: 700 }} variant="inherit">
         nilson@gmail.com
         </Typography>{' '}
-        with password{' '}
+        e senha{' '}
         <Typography component="span" sx={{ fontWeight: 700 }} variant="inherit">
           Secret1
         </Typography>
-      </Alert>
+      </Alert> */}
     </Stack>
   );
 }
