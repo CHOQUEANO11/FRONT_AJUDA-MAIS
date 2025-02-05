@@ -14,18 +14,19 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import dayjs from 'dayjs';
+import "dayjs/locale/pt-br";
 
 const statusMap = {
-  pending: { label: 'Pending', color: 'warning' },
-  delivered: { label: 'Delivered', color: 'success' },
-  refunded: { label: 'Refunded', color: 'error' },
+  pendente: { label: 'Pendente', color: 'warning' },
+  realizado: { label: 'Realizado', color: 'success' },
+  cancelado: { label: 'Cancelado', color: 'error' },
 } as const;
 
 export interface Order {
   id: string;
   customer: { name: string };
   amount: number;
-  status: 'pending' | 'delivered' | 'refunded';
+  status: 'pendente' | 'realizado' | 'cancelado';
   createdAt: Date;
 }
 
@@ -43,9 +44,9 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Order</TableCell>
-              <TableCell>Customer</TableCell>
-              <TableCell sortDirection="desc">Date</TableCell>
+              <TableCell>Nº</TableCell>
+              <TableCell>Usuário</TableCell>
+              <TableCell sortDirection="desc">Data</TableCell>
               <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -57,7 +58,7 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
                 <TableRow hover key={order.id}>
                   <TableCell>{order.id}</TableCell>
                   <TableCell>{order.customer.name}</TableCell>
-                  <TableCell>{dayjs(order.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{dayjs(order.createdAt).locale('pt-br').format('D [de] MMMM, YYYY')}</TableCell>
                   <TableCell>
                     <Chip color={color} label={label} size="small" />
                   </TableCell>
@@ -68,7 +69,7 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
         </Table>
       </Box>
       <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
+      {/* <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button
           color="inherit"
           endIcon={<ArrowRightIcon fontSize="var(--icon-fontSize-md)" />}
@@ -77,7 +78,7 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
         >
           View all
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 }

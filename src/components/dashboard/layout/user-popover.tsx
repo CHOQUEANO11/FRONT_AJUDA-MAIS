@@ -25,8 +25,11 @@ export interface UserPopoverProps {
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
   const { checkSession } = useUser();
-
   const router = useRouter();
+
+  // Recuperando os dados do usuário do localStorage
+  const storedUser = typeof window !== 'undefined' ? localStorage.getItem('spacialty-user-value') : null;
+  const user = storedUser ? JSON.parse(storedUser) : null;
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
@@ -37,12 +40,15 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
         return;
       }
 
+      // Remove os dados do usuário do localStorage
+      localStorage.removeItem('user');
+      localStorage.removeItem('custom-auth-token');
+
       // Refresh the auth state
       await checkSession?.();
 
-      // UserProvider, for this case, will not refresh the router and we need to do it manually
+      // Refresh a página para atualizar o estado do usuário
       router.refresh();
-      // After refresh, AuthGuard will handle the redirect
     } catch (err) {
       logger.error('Sign out error', err);
     }
@@ -57,9 +63,10 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
-        <Typography variant="subtitle1">Nilson Silva</Typography>
+        <Typography variant="subtitle1">{user?.name}</Typography>
+        <Typography variant="subtitle1">{user?.specialty_id?.name}</Typography>
         <Typography color="text.secondary" variant="body2">
-          nilson@gmail.com
+          {user?.email}
         </Typography>
       </Box>
       <Divider />
@@ -86,3 +93,4 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
     </Popover>
   );
 }
+

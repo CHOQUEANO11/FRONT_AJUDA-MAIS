@@ -10,4 +10,5 @@ export const navItems = [
   // { key: 'error', title: 'Error', href: paths.errors.notFound, icon: 'x-square' },
   { key: 'register', title: 'Cadastrar Profissional', href: paths.dashboard.register, icon: 'firstAid' },
   { key: 'specialty', title: 'Cadastrar Especialidade', href: paths.dashboard.specialty, icon: 'stethoscope' },
+  { key: 'schedule', title: 'Cadastrar Agenda', href: paths.dashboard.schedule, icon: 'stethoscope' },
 ] satisfies NavItemConfig[];

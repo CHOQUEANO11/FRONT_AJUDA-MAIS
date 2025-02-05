@@ -61,7 +61,7 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
           </ListItem>
         ))}
       </List>
-      <Divider />
+      {/* <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button
           color="inherit"
@@ -71,7 +71,7 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
         >
           View all
         </Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 }

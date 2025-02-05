@@ -16,9 +16,8 @@ export interface TotalCustomersProps {
   value: string;
 }
 
-export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps): React.JSX.Element {
-  const TrendIcon = trend === 'up' ? ArrowUpIcon : ArrowDownIcon;
-  const trendColor = trend === 'up' ? 'var(--mui-palette-success-main)' : 'var(--mui-palette-error-main)';
+export function TotalCustomers({ diff, sx, value }: TotalCustomersProps): React.JSX.Element {
+
 
   return (
     <Card sx={sx}>
@@ -27,7 +26,7 @@ export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps):
           <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }} spacing={3}>
             <Stack spacing={1}>
               <Typography color="text.secondary" variant="overline">
-                Total Customers
+                Consultas agendadas
               </Typography>
               <Typography variant="h4">{value}</Typography>
             </Stack>
@@ -37,7 +36,7 @@ export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps):
           </Stack>
           {diff ? (
             <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-              <Stack sx={{ alignItems: 'center' }} direction="row" spacing={0.5}>
+              {/* <Stack sx={{ alignItems: 'center' }} direction="row" spacing={0.5}>
                 <TrendIcon color={trendColor} fontSize="var(--icon-fontSize-md)" />
                 <Typography color={trendColor} variant="body2">
                   {diff}%
@@ -45,7 +44,7 @@ export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps):
               </Stack>
               <Typography color="text.secondary" variant="caption">
                 Since last month
-              </Typography>
+              </Typography> */}
             </Stack>
           ) : null}
         </Stack>

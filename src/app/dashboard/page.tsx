@@ -19,18 +19,18 @@ export default function Page(): React.JSX.Element {
   return (
     <Grid container spacing={3}>
       <Grid lg={3} sm={6} xs={12}>
-        <Budget diff={12} trend="up" sx={{ height: '100%' }} value="$24k" />
+        <Budget diff={12} trend="up" sx={{ height: '100%' }} value="16" />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TotalCustomers diff={16} trend="down" sx={{ height: '100%' }} value="1.6k" />
+        <TotalCustomers diff={16} trend="down" sx={{ height: '100%' }} value="5" />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TasksProgress sx={{ height: '100%' }} value={75.5} />
+        <TasksProgress sx={{ height: '100%' }} value="14" />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TotalProfit sx={{ height: '100%' }} value="$15k" />
+        <TotalProfit sx={{ height: '100%' }} value="7" />
       </Grid>
-      <Grid lg={8} xs={12}>
+      <Grid lg={12} xs={12}>
         <Sales
           chartSeries={[
             { name: 'This year', data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20] },
@@ -39,10 +39,10 @@ export default function Page(): React.JSX.Element {
           sx={{ height: '100%' }}
         />
       </Grid>
-      <Grid lg={4} md={6} xs={12}>
+      {/* <Grid lg={4} md={6} xs={12}>
         <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
-      </Grid>
-      <Grid lg={4} md={6} xs={12}>
+      </Grid> */}
+      {/* <Grid lg={4} md={6} xs={12}>
         <LatestProducts
           products={[
             {
@@ -78,50 +78,50 @@ export default function Page(): React.JSX.Element {
           ]}
           sx={{ height: '100%' }}
         />
-      </Grid>
-      <Grid lg={8} md={12} xs={12}>
+      </Grid> */}
+      <Grid lg={12} md={12} xs={12}>
         <LatestOrders
           orders={[
             {
-              id: 'ORD-007',
-              customer: { name: 'Ekaterina Tankova' },
+              id: '01',
+              customer: { name: 'Nilson Silva' },
               amount: 30.5,
-              status: 'pending',
+              status: 'pendente',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
             {
-              id: 'ORD-006',
-              customer: { name: 'Cao Yu' },
+              id: '02',
+              customer: { name: 'Thiago Cardoso' },
               amount: 25.1,
-              status: 'delivered',
+              status: 'realizado',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
             {
-              id: 'ORD-004',
-              customer: { name: 'Alexa Richardson' },
+              id: '03',
+              customer: { name: 'Rafhael Monteiro' },
               amount: 10.99,
-              status: 'refunded',
+              status: 'cancelado',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
             {
-              id: 'ORD-003',
-              customer: { name: 'Anje Keizer' },
+              id: '04',
+              customer: { name: 'Paulo Afonso' },
               amount: 96.43,
-              status: 'pending',
+              status: 'pendente',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
             {
-              id: 'ORD-002',
-              customer: { name: 'Clarke Gillebert' },
+              id: '05',
+              customer: { name: 'Carolina Dantas' },
               amount: 32.54,
-              status: 'delivered',
+              status: 'realizado',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
             {
-              id: 'ORD-001',
-              customer: { name: 'Adam Denisov' },
+              id: '06',
+              customer: { name: 'Ana Patricia' },
               amount: 16.76,
-              status: 'delivered',
+              status: 'realizado',
               createdAt: dayjs().subtract(10, 'minutes').toDate(),
             },
           ]}
