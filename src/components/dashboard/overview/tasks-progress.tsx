@@ -15,7 +15,7 @@ export interface TasksProgressProps {
 
 export function TasksProgress({ value, sx }: TasksProgressProps): React.JSX.Element {
   return (
-    <Card sx={sx}>
+    <Card style={{cursor: 'pointer'}} sx={sx}>
       <CardContent>
         <Stack spacing={2}>
           <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }} spacing={3}>

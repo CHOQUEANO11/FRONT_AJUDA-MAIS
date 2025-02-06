@@ -20,7 +20,7 @@ export function Budget({ diff, sx, value }: BudgetProps): React.JSX.Element {
 
 
   return (
-    <Card sx={sx}>
+    <Card style={{cursor: 'pointer'}} sx={sx}>
       <CardContent>
         <Stack spacing={3}>
           <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }} spacing={3}>

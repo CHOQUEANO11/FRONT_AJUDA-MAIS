@@ -20,7 +20,7 @@ export function TotalCustomers({ diff, sx, value }: TotalCustomersProps): React.
 
 
   return (
-    <Card sx={sx}>
+    <Card style={{cursor: 'pointer'}} sx={sx}>
       <CardContent>
         <Stack spacing={2}>
           <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }} spacing={3}>
