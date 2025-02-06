@@ -13,7 +13,13 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination
+  TablePagination,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import { LocalizationProvider, DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,6 +27,8 @@ import api from "@/lib/api";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { toast, ToastContainer } from "react-toastify";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const availableHours = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
 
@@ -32,6 +40,10 @@ function CreateSchedule() {
   const [scheduleList, setScheduleList] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Para edição
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editSchedule, setEditSchedule] = useState(null);
 
   useEffect(() => {
     const dados = JSON.parse(localStorage.getItem("spacialty-user-value"));
@@ -112,17 +124,69 @@ function CreateSchedule() {
     }
   };
 
+  const handleEditClick = (schedule) => {
+    setEditSchedule(schedule);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteClick = async (scheduleId: any) => {
+    console.log('SQ', scheduleId?._id);
+    try {
+      const token1 = localStorage.getItem("custom-auth-token");
+      await api.delete(`/schedule/schedule/${scheduleId?._id}`, {
+        headers: { Authorization: `Bearer ${token1}` },
+      });
+
+      toast.success("Agenda excluída com sucesso!");
+      fetchSchedules(user);
+    } catch (error) {
+      console.error("Erro ao excluir agenda:", error);
+      toast.error("Erro ao excluir agenda");
+    }
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setEditSchedule(null);
+  };
+
+  const handleDialogSave = async () => {
+    if (!editSchedule) return;
+
+    try {
+      const token1 = localStorage.getItem("custom-auth-token");
+      await api.put(
+        `/schedule/schedule/${editSchedule._id}`,
+        {
+          date: editSchedule.date,
+          hours: editSchedule.hours,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token1}`,
+          },
+        }
+      );
+
+      toast.success("Agenda editada com sucesso!");
+      setOpenDialog(false);
+      fetchSchedules(user);
+    } catch (error) {
+      console.error("Erro ao editar agenda:", error);
+      toast.error("Erro ao editar agenda");
+    }
+  };
+
   const handleHourClick = (hour) => {
     console.log("Horário selecionado:", hour);
     toast.info(`Horário selecionado: ${hour}`);
   };
 
-  // Função para mudar de página
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Função para alterar o número de linhas por página
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -170,15 +234,16 @@ function CreateSchedule() {
       </Card>
 
       {/* Tabela de horários agendados */}
-      <TableContainer component={Paper} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+      <TableContainer component={Paper} sx={{ width: "100%", mt: 4, overflowX: "auto" }}>
         <Typography variant="h6" sx={{ textAlign: "center", mt: 2 }}>
           Horários Agendados
         </Typography>
-        <Table>
+        <Table sx={{ minWidth: 600 }}>
           <TableHead>
             <TableRow>
               <TableCell>Data</TableCell>
               <TableCell>Horário</TableCell>
+              <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -200,11 +265,19 @@ function CreateSchedule() {
                         </Button>
                       ))}
                     </TableCell>
+                    <TableCell>
+                      {/* <IconButton onClick={() => { handleEditClick(schedule); }}>
+                        <EditIcon />
+                      </IconButton> */}
+                      <IconButton onClick={() => handleDeleteClick(schedule)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
                 ))
             ) : (
               <TableRow>
-                <TableCell colSpan={2}>Sem agendamentos.</TableCell>
+                <TableCell colSpan={3}>Sem agendamentos.</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -223,10 +296,36 @@ function CreateSchedule() {
         />
       </TableContainer>
 
+      {/* Dialog de edição */}
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Editar Agenda</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Data"
+            value={editSchedule ? editSchedule.date : ""}
+            fullWidth
+            disabled
+          />
+          <TextField
+            label="Horários"
+            value={editSchedule ? editSchedule.hours.join(", ") : ""}
+            fullWidth
+            disabled
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleDialogSave} color="primary">
+            Salvar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <ToastContainer />
     </LocalizationProvider>
   );
 }
 
 export default CreateSchedule;
-

@@ -29,13 +29,14 @@ import "react-toastify/dist/ReactToastify.css";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import api from '@/lib/api'
 
 const schema = z.object({
-  fullName: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
+  name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
   email: z.string().email({ message: "E-mail inválido" }),
   phone: z.string().min(10, { message: "Telefone inválido" }),
-  organization: z.coerce.number().min(1, { message: "Informe um órgão válido" }),
-  specialty: z.coerce.number().min(1, { message: "Informe uma especialidade" }),
+  orgao_id: z.coerce.string().min(1, { message: "Informe um órgão válido" }),
+  specialty_id: z.coerce.string().min(1, { message: "Informe uma especialidade" }),
   password: z.string().default("123456"),
 });
 
@@ -67,56 +68,149 @@ export default function RegisterProfessional() {
   });
 
   const [showForm, setShowForm] = React.useState(false);
-  const [professionals, setProfessionals] = React.useState<FormData[]>([]);
+  const [professionals, setProfessionals] = React.useState([]);
+  const [specialty, setSpecialty] = React.useState([]);
+  const [userOrg, setUserOrg] = React.useState<any[]>([]);
+  const [user, setUser] = React.useState({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const [isEditing, setIsEditing] = React.useState(false); // Controla o modo de edição
   const [editIndex, setEditIndex] = React.useState<number | null>(null); // Index do profissional em edição
   const itemsPerPage = 5;
 
   React.useEffect(() => {
-    if (professionals.length === 0) {
-      toast.error("Nenhum Profissional cadastrado.");
-    }
-  }, [professionals]);
+    // if (professionals.length === 0) {
+    //   toast.error("Nenhum Profissional cadastrado.");
+    // }
+    getSpecialty()
+    // getUserOrg()
+  }, []);
 
-  const onSubmit = (data: FormData) => {
-    if (isEditing && editIndex !== null) {
-      const updatedProfessionals = [...professionals];
-      updatedProfessionals[editIndex] = data;
-      setProfessionals(updatedProfessionals);
-      console.log(updatedProfessionals);
-      toast.success("Profissional atualizado com sucesso!");
-    } else {
-      setProfessionals((prev) => [...prev, data]);
-      toast.success("Profissional cadastrado com sucesso!");
+  const getSpecialty = async () => {
+    try {
+      const token = localStorage.getItem('custom-auth-token');
+      const dados = JSON.parse(localStorage.getItem('spacialty-user-value'));
+      setUser(dados)
+
+      if (!dados?.orgao_id?._id) {
+        toast.error("ID do órgão não encontrado.");
+        return;
+      }
+
+      const response = await api.get(`specialty/specialty/${dados.orgao_id._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSpecialty(response.data.specialties);
+      console.log('bb', response.data)
+
+      const response1 = await api.get(`specialtyUser/specialtyOrg/${dados?.orgao_id?._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserOrg(response1.data.users);
+      console.log('MM', response1.data)
+    } catch (error) {
+      console.error("Erro ao buscar especialidades:", error);
+      toast.error("Erro ao carregar especialidades");
     }
-    reset(); // Limpa o formulário após o envio
-    setShowForm(false); // Oculta o formulário após cadastro ou edição
-    setIsEditing(false); // Reseta o modo de edição
-    setEditIndex(null); // Limpa o índice de edição
   };
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      const token = localStorage.getItem("custom-auth-token");
+      const requestData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        orgao_id: data.orgao_id,
+        specialty_id: data.specialty_id,
+        password: "123456",
+      };
+
+      if (isEditing && editIndex) {
+        await api.put(`specialtyUser/update/${editIndex}`, requestData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUserOrg((prev) =>
+          prev.map((p) =>
+            p._id === String(editIndex) ? { ...p, ...requestData } : p
+          )
+        );
+
+        toast.success("Profissional atualizado com sucesso!");
+      } else {
+        const response = await api.post("specialtyUser/specialtyUser", requestData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUserOrg((prev) => [...prev, response.data]);
+
+        toast.success("Profissional cadastrado com sucesso!");
+      }
+
+      // Atualiza os dados chamando a API novamente para refletir as mudanças
+      await getSpecialty();
+
+      // Reseta o formulário
+      reset();
+      setShowForm(false);
+      setIsEditing(false);
+      setEditIndex(null);
+    } catch (error) {
+      console.error("Erro ao salvar profissional:", error);
+      toast.error("Erro ao salvar profissional");
+    }
+  };
+
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
 
-  const handleEdit = (index: number) => {
-    const professional = professionals[index];
-    setValue("fullName", professional.fullName);
-    setValue("email", professional.email);
-    setValue("phone", professional.phone);
-    setValue("organization", professional.organization);
-    setValue("specialty", professional.specialty);
-    setShowForm(true); // Exibe o formulário de edição
-    setIsEditing(true); // Marca que está no modo de edição
-    setEditIndex(index); // Salva o índice do profissional em edição
+
+  const handleEdit = (professional: any) => {
+  // Define os valores do formulário com os dados do profissional selecionado
+  setValue("name", professional.name);
+  setValue("email", professional.email);
+  setValue("phone", professional.phone);
+  setValue("orgao_id", professional.orgao_id?._id);
+  setValue("specialty_id", professional.specialty_id?._id);
+
+  setShowForm(true); // Exibe o formulário de edição
+  setIsEditing(true); // Define o modo de edição
+  setEditIndex(professional._id); // Armazena o ID do profissional que está sendo editado
+};
+
+
+
+  const handleDelete = async (professional: any) => {
+    try {
+      const token = localStorage.getItem("custom-auth-token");
+
+      await api.delete(`specialtyUser/delete/${professional?._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Atualiza o estado removendo o item excluído
+      setUserOrg((prev) => prev.filter((p) => p._id !== professional?._id));
+
+      toast.success("Profissional excluído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir profissional:", error);
+      toast.error("Erro ao excluir profissional");
+    }
   };
 
-  const handleDelete = (index: number) => {
-    const updatedProfessionals = professionals.filter((_, i) => i !== index);
-    setProfessionals(updatedProfessionals);
-    toast.success("Profissional deletado com sucesso!");
-  };
+
+
+
 
   return (
     <Container maxWidth={false} sx={{ width: "100%", p: 3 }}>
@@ -148,9 +242,9 @@ export default function RegisterProfessional() {
                 <TextField
                   fullWidth
                   label="Nome Completo"
-                  {...register("fullName")}
-                  error={Boolean(errors.fullName)}
-                  helperText={errors.fullName?.message}
+                  {...register("name")}
+                  error={Boolean(errors.name)}
+                  helperText={errors.name?.message}
                   margin="normal"
                 />
               </Grid>
@@ -183,16 +277,16 @@ export default function RegisterProfessional() {
                   select
                   fullWidth
                   label="Órgão"
-                  {...register("organization")}
-                  error={Boolean(errors.organization)}
-                  helperText={errors.organization?.message}
+                  {...register("orgao_id")}
+                  error={Boolean(errors.orgao_id)}
+                  helperText={errors.orgao_id?.message}
                   margin="normal"
                 >
-                  {organizations.map((org) => (
-                    <MenuItem key={org.id} value={String(org.id)}>
-                      {org.name}
+                  {/* {organizations.map((org) => ( */}
+                    <MenuItem key={user?.orgao_id?._id} value={String(user.orgao_id?._id)}>
+                      {user?.orgao_id?.name}
                     </MenuItem>
-                  ))}
+                  {/* ))} */}
                 </TextField>
               </Grid>
 
@@ -202,13 +296,13 @@ export default function RegisterProfessional() {
                   select
                   fullWidth
                   label="Especialidade"
-                  {...register("specialty")}
-                  error={Boolean(errors.specialty)}
-                  helperText={errors.specialty?.message}
+                  {...register("specialty_id")}
+                  error={Boolean(errors.specialty_id)}
+                  helperText={errors.specialty_id?.message}
                   margin="normal"
                 >
-                  {specialties.map((specialty) => (
-                    <MenuItem key={specialty.id} value={String(specialty.id)}>
+                  {specialty.map((specialty) => (
+                    <MenuItem key={specialty._id} value={String(specialty._id)}>
                       {specialty.name}
                     </MenuItem>
                   ))}
@@ -263,29 +357,36 @@ export default function RegisterProfessional() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {professionals
-                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                .map((professional, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{professional.fullName}</TableCell>
-                    <TableCell>{professional.email}</TableCell>
-                    <TableCell>{professional.phone}</TableCell>
-                    <TableCell>{organizations.find((org) => org.id === professional.organization)?.name}</TableCell>
-                    <TableCell>{specialties.find((spec) => spec.id === professional.specialty)?.name}</TableCell>
-                    <TableCell>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <MuiIconButton onClick={() => { handleEdit(index); }}>
-                          <EditIcon sx={{ color: "#03DAC6" }} />
-                          {/* Editar */}
-                        </MuiIconButton>
-                        <MuiIconButton onClick={() => { handleDelete(index); }}>
-                          <DeleteIcon sx={{ color: "#F44336" }} />
-                          {/* Excluir */}
-                        </MuiIconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
+            {Array.isArray(userOrg) && userOrg.length > 0 ? (
+  userOrg
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    .map((professional, index) => (
+      <TableRow key={index}>
+        <TableCell>{professional?.name}</TableCell>
+        <TableCell>{professional?.email}</TableCell>
+        <TableCell>{professional?.phone}</TableCell>
+        <TableCell>{professional?.orgao_id?.name}</TableCell>
+        <TableCell>{professional?.specialty_id?.name}</TableCell>
+        <TableCell>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <MuiIconButton onClick={() => { handleEdit(professional); }}>
+              <EditIcon sx={{ color: "#03DAC6" }} />
+            </MuiIconButton>
+            <MuiIconButton onClick={() => { handleDelete(professional); }}>
+              <DeleteIcon sx={{ color: "#F44336" }} />
+            </MuiIconButton>
+          </Box>
+        </TableCell>
+      </TableRow>
+    ))
+) : (
+  <TableRow>
+    <TableCell colSpan={5} align="center">
+      Nenhum profissional cadastrado.
+    </TableCell>
+  </TableRow>
+)}
+
             </TableBody>
           </Table>
         </TableContainer>
