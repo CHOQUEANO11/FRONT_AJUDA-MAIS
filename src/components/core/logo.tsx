@@ -18,7 +18,7 @@ export interface LogoProps {
   width?: number;
 }
 
-export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }: LogoProps): React.JSX.Element {
+export function Logo({ color = 'dark', emblem, width = WIDTH }: LogoProps): React.JSX.Element {
   let url: string;
 
   if (emblem) {

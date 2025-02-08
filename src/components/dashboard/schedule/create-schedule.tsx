@@ -1,3 +1,5 @@
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/react-in-jsx-scope */
 'use client'
 import { useState, useEffect } from "react";
@@ -27,45 +29,70 @@ import api from "@/lib/api";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { toast, ToastContainer } from "react-toastify";
+import moment from 'moment'
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+// import { DatePicker } from '@mui/x-date-pickers';
+// import { PickersDay } from '@mui/x-date-pickers';
+
 
 const availableHours = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
 
+interface User {
+  _id: string;
+  orgao_id?: {
+    _id: string;
+  };
+  specialty_id?: {
+    _id: string;
+  };
+}
+
+interface Schedule {
+  _id: string;
+  date: string; // ou Date, dependendo do formato
+  hours: string[]; // ou outro tipo, dependendo de como você armazena as horas
+}
+
+
+
 function CreateSchedule() {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [user, setUser] = useState({});
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState("");
-  const [selectedHours, setSelectedHours] = useState([]);
-  const [scheduleList, setScheduleList] = useState([]);
+  const [selectedHours, setSelectedHours] = useState<string[]>([]);
+  const [scheduleList, setScheduleList] = useState<Schedule[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Para edição
   const [openDialog, setOpenDialog] = useState(false);
-  const [editSchedule, setEditSchedule] = useState(null);
+  const [editSchedule, setEditSchedule] = useState<Schedule | null>(null);
 
   useEffect(() => {
-    const dados = JSON.parse(localStorage.getItem("spacialty-user-value"));
+    const dados: any = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
     setUser(dados);
-    const storedToken = localStorage.getItem("custom-auth-token");
-    setToken(storedToken);
+    const storedToken = localStorage.getItem("custom-auth-token") ?? '';
+setToken(storedToken);
+
 
     if (dados?._id) {
       fetchSchedules(dados);
     }
   }, []);
 
-  const handleDateChange = (newDate) => {
+  const handleDateChange = (newDate: dayjs.Dayjs | null) => {
     setSelectedDate(newDate);
     setSelectedHours([]);
   };
 
-  const toggleHour = (hour) => {
+
+  const toggleHour = (hour: string) => {
     setSelectedHours((prev) =>
       prev.includes(hour) ? prev.filter((h) => h !== hour) : [...prev, hour]
     );
   };
+
 
   const saveSchedule = async () => {
     if (!selectedDate || selectedHours.length === 0) return;
@@ -103,7 +130,7 @@ function CreateSchedule() {
     }
   };
 
-  const fetchSchedules = async (dados) => {
+  const fetchSchedules = async (dados: any) => {
     if (!dados?._id) return;
 
     try {
@@ -124,7 +151,7 @@ function CreateSchedule() {
     }
   };
 
-  const handleEditClick = (schedule) => {
+  const handleEditClick = (schedule: any) => {
     setEditSchedule(schedule);
     setOpenDialog(true);
   };
@@ -178,16 +205,16 @@ function CreateSchedule() {
     }
   };
 
-  const handleHourClick = (hour) => {
+  const handleHourClick = (hour: any) => {
     console.log("Horário selecionado:", hour);
     toast.info(`Horário selecionado: ${hour}`);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -198,13 +225,10 @@ function CreateSchedule() {
         <CardContent>
           <Typography variant="h6">Selecione um dia</Typography>
           <DateCalendar
-            value={selectedDate}
-            onChange={handleDateChange}
-            disablePast
-            renderDay={(day, selectedDays, pickersDayProps) => (
-              <PickersDay {...pickersDayProps} />
-            )}
-          />
+      value={selectedDate}
+      onChange={handleDateChange}
+      disablePast
+    />
           {selectedDate ? <>
               <Typography variant="h6" sx={{ mt: 2 }}>
                 Selecione os horários

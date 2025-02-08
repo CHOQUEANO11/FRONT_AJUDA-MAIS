@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import * as React from "react";
@@ -35,6 +36,13 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+interface Specialty {
+  _id: string; // ou o tipo apropriado para o _id, por exemplo, ObjectId
+  name: string;
+  orgao_id?: { _id: string }; // Caso orgao_id seja um objeto com um _id
+}
+
+
 export default function CreateSpecialty() {
   const {
     register,
@@ -45,10 +53,10 @@ export default function CreateSpecialty() {
     resolver: zodResolver(schema),
   });
 
-  const [specialties, setSpecialties] = React.useState([]);
+  const [specialties, setSpecialties] = React.useState<Specialty[]>([]);
   const [showForm, setShowForm] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [editingSpecialty, setEditingSpecialty] = React.useState(null);
+  const [editingSpecialty, setEditingSpecialty] = React.useState<Specialty | null>(null);
   const itemsPerPage = 5;
 
   React.useEffect(() => {
@@ -58,7 +66,7 @@ export default function CreateSpecialty() {
   const getSpecialty = async () => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const dados = JSON.parse(localStorage.getItem('spacialty-user-value'));
+      const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
 
       if (!dados?.orgao_id?._id) {
         toast.error("ID do órgão não encontrado.");
@@ -82,7 +90,7 @@ export default function CreateSpecialty() {
   const onSubmit = async (data: FormData) => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const dados = JSON.parse(localStorage.getItem('spacialty-user-value'));
+      const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
 
       if (editingSpecialty) {
         // Editando uma especialidade existente
@@ -128,12 +136,12 @@ export default function CreateSpecialty() {
     reset({ name: specialty.name });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (specialty: any) => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const dados = JSON.parse(localStorage.getItem('spacialty-user-value'));
+      const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
 
-      await api.delete(`/specialty/specialty/${id}`, {
+      await api.delete(`/specialty/specialty/${specialty?._id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -216,7 +224,7 @@ export default function CreateSpecialty() {
                       <IconButton onClick={() => { handleEdit(specialty); }}>
                         <EditIcon color="primary" />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(specialty._id)}>
+                      <IconButton onClick={() => handleDelete(specialty)}>
                         <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>

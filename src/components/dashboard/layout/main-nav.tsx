@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client';
 
 import * as React from 'react';
@@ -21,8 +22,8 @@ import { UserPopover } from './user-popover';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
-  const dados = JSON.parse(localStorage.getItem('spacialty-user-value'))
-  console.log('PP', dados?.photo)
+  const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
+  // console.log('PP', dados?.photo)
 
   const userPopover = usePopover<HTMLDivElement>();
 

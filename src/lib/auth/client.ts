@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client';
 
 import axios from 'axios';
@@ -52,7 +53,7 @@ class AuthClient {
             return { data: null };
           }
 
-          return { data: token };
+          return  {data:  token};
   }
 
   async signOut(): Promise<{ error?: string }> {

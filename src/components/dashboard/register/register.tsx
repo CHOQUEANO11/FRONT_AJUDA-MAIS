@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import * as React from "react";
@@ -56,6 +58,19 @@ const organizations = [
   { id: 4, name: "Polícia Penal" },
 ];
 
+interface UserType {
+  orgao_id?: {
+    _id?: string;
+    name?: string;
+  };
+}
+
+interface SpecialtyType {
+  _id: string;
+  name: string;
+}
+
+
 export default function RegisterProfessional() {
   const {
     register,
@@ -69,9 +84,9 @@ export default function RegisterProfessional() {
 
   const [showForm, setShowForm] = React.useState(false);
   const [professionals, setProfessionals] = React.useState([]);
-  const [specialty, setSpecialty] = React.useState([]);
+  const [specialty, setSpecialty] = React.useState<SpecialtyType[]>([]);
   const [userOrg, setUserOrg] = React.useState<any[]>([]);
-  const [user, setUser] = React.useState({});
+  const [user, setUser] = React.useState<UserType>({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const [isEditing, setIsEditing] = React.useState(false); // Controla o modo de edição
   const [editIndex, setEditIndex] = React.useState<number | null>(null); // Index do profissional em edição
@@ -88,7 +103,7 @@ export default function RegisterProfessional() {
   const getSpecialty = async () => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const dados = JSON.parse(localStorage.getItem('spacialty-user-value'));
+      const dados: any = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
       setUser(dados)
 
       if (!dados?.orgao_id?._id) {
