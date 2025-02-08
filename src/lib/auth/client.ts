@@ -48,12 +48,31 @@ class AuthClient {
   }
 
   async getUser(): Promise<{ data?: User | null; error?: string }> {
-    const token = localStorage.getItem('custom-auth-token');
-    if (!token) {
-            return { data: null };
-          }
+    const token = localStorage.getItem('custom-auth-token'); // Pegue o token do localStorage
 
-          return  {data:  token};
+    // Se não tiver o token, retorne null
+    if (!token) {
+      return { data: null };
+    }
+
+    try {
+      // Faça uma requisição para buscar os dados do usuário usando o token
+      const response = await api.get('/specialtyUser/getUser', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Envie o token no cabeçalho da requisição
+        },
+      });
+
+      // Se a resposta contiver os dados do usuário, retorne-os
+      if (response.data) {
+        return { data: response.data as User }; // Converta a resposta para o tipo 'User'
+      } 
+        return { data: null }; // Se não encontrar o usuário, retorne null
+      
+    } catch (error) {
+      // Caso ocorra um erro, retorne a mensagem de erro
+      return { error: 'Erro ao buscar os dados do usuário' };
+    }
   }
 
   async signOut(): Promise<{ error?: string }> {
