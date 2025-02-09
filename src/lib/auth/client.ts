@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 'use client';
 
 import axios from 'axios';
@@ -40,7 +44,7 @@ class AuthClient {
 
       localStorage.setItem('custom-auth-token', token);
       localStorage.setItem('spacialty-user-value', JSON.stringify(user));
-      console.log('USER', user)
+      // console.log('USER', user)
       return {};
     } catch (error: any) {
       return { error: error.response?.data?.error || 'Erro ao fazer login' };
@@ -66,9 +70,9 @@ class AuthClient {
       // Se a resposta contiver os dados do usuário, retorne-os
       if (response.data) {
         return { data: response.data as User }; // Converta a resposta para o tipo 'User'
-      } 
+      }
         return { data: null }; // Se não encontrar o usuário, retorne null
-      
+
     } catch (error) {
       // Caso ocorra um erro, retorne a mensagem de erro
       return { error: 'Erro ao buscar os dados do usuário' };

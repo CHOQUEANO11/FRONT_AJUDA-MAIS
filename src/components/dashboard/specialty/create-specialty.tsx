@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
@@ -80,9 +85,9 @@ export default function CreateSpecialty() {
         },
       });
       setSpecialties(response.data.specialties);
-      console.log('bb', response.data)
+      // console.log('bb', response.data)
     } catch (error) {
-      console.error("Erro ao buscar especialidades:", error);
+      // console.error("Erro ao buscar especialidades:", error);
       toast.error("Erro ao carregar especialidades");
     }
   };
@@ -125,7 +130,7 @@ export default function CreateSpecialty() {
       reset();
       getSpecialty();
     } catch (error) {
-      console.error("Erro ao cadastrar/editar especialidade:", error);
+      // console.error("Erro ao cadastrar/editar especialidade:", error);
       toast.error("Erro ao cadastrar/editar especialidade");
     }
   };
@@ -151,7 +156,7 @@ export default function CreateSpecialty() {
       toast.success("Especialidade excluída com sucesso!");
       getSpecialty();
     } catch (error) {
-      console.error("Erro ao excluir especialidade:", error);
+      // console.error("Erro ao excluir especialidade:", error);
       toast.error("Erro ao excluir especialidade");
     }
   };

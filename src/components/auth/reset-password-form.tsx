@@ -1,4 +1,7 @@
 
+/* eslint-disable eslint-comments/require-description */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 
 import * as React from 'react';
@@ -36,7 +39,6 @@ export function ResetPasswordForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
 
-      console.log(values)
 
       // const { error } = await authClient.resetPassword(values);
 

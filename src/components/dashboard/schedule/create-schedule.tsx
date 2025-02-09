@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/react-in-jsx-scope */
@@ -23,14 +28,14 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { LocalizationProvider, DateCalendar, PickersDay } from "@mui/x-date-pickers";
+import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import api from "@/lib/api";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { toast, ToastContainer } from "react-toastify";
-import moment from 'moment'
-import EditIcon from "@mui/icons-material/Edit";
+// import moment from 'moment'
+// import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import { DatePicker } from '@mui/x-date-pickers';
 // import { PickersDay } from '@mui/x-date-pickers';
@@ -125,7 +130,7 @@ setToken(storedToken);
       setSelectedHours([]);
       fetchSchedules(user);
     } catch (error) {
-      console.error("Erro ao salvar agenda:", error);
+      // console.error("Erro ao salvar agenda:", error);
       toast.error("Erro ao salvar agenda");
     }
   };
@@ -146,18 +151,18 @@ setToken(storedToken);
 
       setScheduleList(response.data);
     } catch (error) {
-      console.error("Erro ao buscar horários:", error);
+      // console.error("Erro ao buscar horários:", error);
       toast.error("Erro ao carregar horários");
     }
   };
 
-  const handleEditClick = (schedule: any) => {
-    setEditSchedule(schedule);
-    setOpenDialog(true);
-  };
+  // const handleEditClick = (schedule: any) => {
+  //   setEditSchedule(schedule);
+  //   setOpenDialog(true);
+  // };
 
   const handleDeleteClick = async (scheduleId: any) => {
-    console.log('SQ', scheduleId?._id);
+    // console.log('SQ', scheduleId?._id);
     try {
       const token1 = localStorage.getItem("custom-auth-token");
       await api.delete(`/schedule/schedule/${scheduleId?._id}`, {
@@ -167,7 +172,7 @@ setToken(storedToken);
       toast.success("Agenda excluída com sucesso!");
       fetchSchedules(user);
     } catch (error) {
-      console.error("Erro ao excluir agenda:", error);
+      // console.error("Erro ao excluir agenda:", error);
       toast.error("Erro ao excluir agenda");
     }
   };
@@ -200,13 +205,13 @@ setToken(storedToken);
       setOpenDialog(false);
       fetchSchedules(user);
     } catch (error) {
-      console.error("Erro ao editar agenda:", error);
+      // console.error("Erro ao editar agenda:", error);
       toast.error("Erro ao editar agenda");
     }
   };
 
   const handleHourClick = (hour: any) => {
-    console.log("Horário selecionado:", hour);
+    // console.log("Horário selecionado:", hour);
     toast.info(`Horário selecionado: ${hour}`);
   };
 

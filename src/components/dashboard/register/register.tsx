@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
@@ -44,19 +49,6 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const specialties = [
-  { id: 1, name: "Psicólogo" },
-  { id: 2, name: "Psiquiatra" },
-  { id: 3, name: "Neurologista" },
-  { id: 4, name: "Terapeuta" },
-];
-
-const organizations = [
-  { id: 1, name: "Polícia Militar" },
-  { id: 2, name: "Bombeiro Militar" },
-  { id: 3, name: "Guarda Municipal" },
-  { id: 4, name: "Polícia Penal" },
-];
 
 interface UserType {
   orgao_id?: {
@@ -83,7 +75,7 @@ export default function RegisterProfessional() {
   });
 
   const [showForm, setShowForm] = React.useState(false);
-  const [professionals, setProfessionals] = React.useState([]);
+  const [professionals, ] = React.useState([]);
   const [specialty, setSpecialty] = React.useState<SpecialtyType[]>([]);
   const [userOrg, setUserOrg] = React.useState<any[]>([]);
   const [user, setUser] = React.useState<UserType>({});
@@ -118,7 +110,7 @@ export default function RegisterProfessional() {
         },
       });
       setSpecialty(response.data.specialties);
-      console.log('bb', response.data)
+      // console.log('bb', response.data)
 
       const response1 = await api.get(`specialtyUser/specialtyOrg/${dados?.orgao_id?._id}`, {
         headers: {
@@ -127,9 +119,9 @@ export default function RegisterProfessional() {
         },
       });
       setUserOrg(response1.data.users);
-      console.log('MM', response1.data)
+      // console.log('MM', response1.data)
     } catch (error) {
-      console.error("Erro ao buscar especialidades:", error);
+      // console.error("Erro ao buscar especialidades:", error);
       toast.error("Erro ao carregar especialidades");
     }
   };
@@ -177,7 +169,7 @@ export default function RegisterProfessional() {
       setIsEditing(false);
       setEditIndex(null);
     } catch (error) {
-      console.error("Erro ao salvar profissional:", error);
+      // console.error("Erro ao salvar profissional:", error);
       toast.error("Erro ao salvar profissional");
     }
   };
@@ -218,7 +210,7 @@ export default function RegisterProfessional() {
 
       toast.success("Profissional excluído com sucesso!");
     } catch (error) {
-      console.error("Erro ao excluir profissional:", error);
+      // console.error("Erro ao excluir profissional:", error);
       toast.error("Erro ao excluir profissional");
     }
   };
@@ -316,7 +308,7 @@ export default function RegisterProfessional() {
                   helperText={errors.specialty_id?.message}
                   margin="normal"
                 >
-                  {specialty.map((specialty) => (
+                  {specialty.map((specialty: any) => (
                     <MenuItem key={specialty._id} value={String(specialty._id)}>
                       {specialty.name}
                     </MenuItem>
