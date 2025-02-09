@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
- 
+
 'use client';
 
 import axios from 'axios';
@@ -77,6 +77,10 @@ class AuthClient {
       // Caso ocorra um erro, retorne a mensagem de erro
       return { error: 'Erro ao buscar os dados do usuário' };
     }
+  }
+
+  async resetPassword(_: ResetPasswordParams): Promise<{ error?: string }> {
+    return { error: 'Password reset not implemented' };
   }
 
   async signOut(): Promise<{ error?: string }> {
@@ -158,9 +162,9 @@ export const authClient = new AuthClient();
 //     return {};
 //   }
 
-//   async resetPassword(_: ResetPasswordParams): Promise<{ error?: string }> {
-//     return { error: 'Password reset not implemented' };
-//   }
+  // async resetPassword(_: ResetPasswordParams): Promise<{ error?: string }> {
+  //   return { error: 'Password reset not implemented' };
+  // }
 
 //   async updatePassword(_: ResetPasswordParams): Promise<{ error?: string }> {
 //     return { error: 'Update reset not implemented' };

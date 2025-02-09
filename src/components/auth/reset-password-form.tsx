@@ -1,7 +1,3 @@
-
-/* eslint-disable eslint-comments/require-description */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 'use client';
 
 import * as React from 'react';
@@ -17,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
-// import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client';
 
 const schema = zod.object({ email: zod.string().min(1, { message: 'Email is required' }).email() });
 
@@ -39,14 +35,13 @@ export function ResetPasswordForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
 
+      const { error } = await authClient.resetPassword(values);
 
-      // const { error } = await authClient.resetPassword(values);
-
-      // if (error) {
-      //   setError('root', { type: 'server', message: error });
-      //   setIsPending(false);
-      //   return;
-      // }
+      if (error) {
+        setError('root', { type: 'server', message: error });
+        setIsPending(false);
+        return;
+      }
 
       setIsPending(false);
 
