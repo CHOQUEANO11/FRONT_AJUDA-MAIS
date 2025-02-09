@@ -22,6 +22,8 @@ module.exports = {
     },
   },
   rules: {
+    'no-unused-vars': 'off', // Desativa a verificação de variáveis não usadas
+    'react/jsx-no-undef': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
