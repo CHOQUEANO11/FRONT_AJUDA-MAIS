@@ -1,3 +1,5 @@
+
+
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -84,7 +86,10 @@ class AuthClient {
   }
 
   async signOut(): Promise<{ error?: string }> {
+    localStorage.removeItem('spacialty-user-value');
     localStorage.removeItem('custom-auth-token');
+
+
     return {};
   }
 }
