@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
- 
+
 'use client';
 
 import * as React from 'react';
@@ -25,7 +26,7 @@ export function SideNav(): React.JSX.Element {
 
   // Carregar os itens de navegação dinamicamente com base no role do usuário
   React.useEffect(() => {
-    const items = generateNavItems();  // Chama a função que gera os itens com base no papel do usuário
+    const items: any = generateNavItems();  // Chama a função que gera os itens com base no papel do usuário
     setNavItems(items);
   }, []); // Executa uma vez após o componente ser montado
 
