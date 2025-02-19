@@ -73,19 +73,18 @@ export default function CreateSpecialty() {
       const token = localStorage.getItem('custom-auth-token');
       const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
 
-      if (!dados?.orgao_id?._id) {
+      if (!dados?.orgao_id) {
         toast.error("ID do órgão não encontrado.");
         return;
       }
 
-      const response = await api.get(`specialty/specialty/${dados.orgao_id._id}`, {
+      const response = await api.get(`specialty/specialty/${dados.orgao_id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      setSpecialties(response.data.specialties);
-      // console.log('bb', response.data)
+      setSpecialties(response.data?.specialties);
     } catch (error) {
       // console.error("Erro ao buscar especialidades:", error);
       toast.error("Erro ao carregar especialidades");
@@ -114,7 +113,7 @@ export default function CreateSpecialty() {
         // Criando uma nova especialidade
         const response = await api.post("/specialty/specialty", {
           name: data.name,
-          orgao_id: dados?.orgao_id?._id,
+          orgao_id: dados?.orgao_id,
         }, {
           headers: {
             "Content-Type": "application/json",
@@ -223,10 +222,10 @@ export default function CreateSpecialty() {
               specialties
                 .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                 .map((specialty, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={specialty?._id}>
                     <TableCell>{specialty?.name}</TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={() => { handleEdit(specialty); }}>
+                      <IconButton onClick={() => {handleEdit(specialty); }}>
                         <EditIcon color="primary" />
                       </IconButton>
                       <IconButton onClick={() => handleDelete(specialty)}>

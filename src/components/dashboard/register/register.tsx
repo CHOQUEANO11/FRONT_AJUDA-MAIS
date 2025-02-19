@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -92,39 +94,49 @@ export default function RegisterProfessional() {
     // getUserOrg()
   }, []);
 
+
+
   const getSpecialty = async () => {
     try {
       const token = localStorage.getItem('custom-auth-token');
       const dados: any = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
       setUser(dados)
 
-      if (!dados?.orgao_id?._id) {
+      if (!dados?.orgao_id) {
         toast.error("ID do órgão não encontrado.");
         return;
       }
 
-      const response = await api.get(`specialty/specialty/${dados.orgao_id._id}`, {
+      const response = await api.get(`specialty/specialty/${dados.orgao_id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
       setSpecialty(response.data.specialties);
-      // console.log('bb', response.data)
 
-      const response1 = await api.get(`specialtyUser/specialtyOrg/${dados?.orgao_id?._id}`, {
+      const response1 = await api.get(`usuario/getUser/${dados?.orgao_id}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
       setUserOrg(response1.data.users);
-      // console.log('MM', response1.data)
+
+
     } catch (error) {
       // console.error("Erro ao buscar especialidades:", error);
       toast.error("Erro ao carregar especialidades");
     }
   };
+
+  // const result = async () => {
+  //   const response = await api.get('/usuario/getUser', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`, // Envie o token no cabeçalho da requisição
+  //     },
+  //   });
+  // }
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -133,13 +145,14 @@ export default function RegisterProfessional() {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        orgao_id: data.orgao_id,
+        orgao_id: user.orgao_id,
         specialty_id: data.specialty_id,
+        role: 'admin',
         password: "123456",
       };
 
       if (isEditing && editIndex) {
-        await api.put(`specialtyUser/update/${editIndex}`, requestData, {
+        await api.put(`usuario/user/${editIndex}`, requestData, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -151,7 +164,7 @@ export default function RegisterProfessional() {
 
         toast.success("Profissional atualizado com sucesso!");
       } else {
-        const response = await api.post("specialtyUser/specialtyUser", requestData, {
+        const response = await api.post("usuario", requestData, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -199,7 +212,7 @@ export default function RegisterProfessional() {
     try {
       const token = localStorage.getItem("custom-auth-token");
 
-      await api.delete(`specialtyUser/delete/${professional?._id}`, {
+      await api.delete(`usuario/user/${professional?._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -279,23 +292,19 @@ export default function RegisterProfessional() {
               </Grid>
 
               {/* Campo Órgão - Agora como um SELECT */}
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
-                  select
+                  // select
                   fullWidth
-                  label="Órgão"
+                  label={` ${professionals?.orgao_id?.name}`}
                   {...register("orgao_id")}
                   error={Boolean(errors.orgao_id)}
                   helperText={errors.orgao_id?.message}
+                  InputLabelProps={{ shrink: true }}
                   margin="normal"
-                >
-                  {/* {organizations.map((org) => ( */}
-                    <MenuItem key={user?.orgao_id?._id} value={String(user.orgao_id?._id)}>
-                      {user?.orgao_id?.name}
-                    </MenuItem>
-                  {/* ))} */}
-                </TextField>
-              </Grid>
+                />
+
+              </Grid> */}
 
               {/* Campo Especialidade - Já era um SELECT */}
               <Grid item xs={12} sm={6}>

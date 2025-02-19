@@ -112,8 +112,8 @@ setToken(storedToken);
         "/schedule/schedule",
         {
           user_id: user?._id,
-          org_id: user?.orgao_id?._id,
-          specialty_id: user?.specialty_id?._id,
+          orgao_id: user?.orgao_id,
+          specialty_id: user?.specialty_id,
           date: selectedDate.format("YYYY-MM-DD"),
           hours: selectedHours,
         },

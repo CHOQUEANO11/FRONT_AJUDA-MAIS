@@ -17,6 +17,9 @@ import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import { paths } from '@/paths';
 import { authClient } from '@/lib/auth/client';
@@ -53,6 +56,7 @@ export function SignInForm(): React.JSX.Element {
 
         if (error) {
           setError('root', { type: 'server', message: error });
+          toast.error('teste')
           return;
         }
 
@@ -149,6 +153,8 @@ export function SignInForm(): React.JSX.Element {
           Secret1
         </Typography>
       </Alert> */}
+       <ToastContainer
+       />
     </Stack>
   );
 }

@@ -1,5 +1,7 @@
 
 
+
+
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,6 +12,9 @@
 import axios from 'axios';
 import type { User } from '@/types/user';
 import api from '@/lib/api'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const API_BASE_URL = 'http://localhost:3001'; // Altere para sua API
 
@@ -41,7 +46,7 @@ class AuthClient {
 
   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
     try {
-      const response = await api.post(`/login/specialty`, params);
+      const response = await api.post(`/login`, params);
       const { token, user } = response.data;
 
       localStorage.setItem('custom-auth-token', token);
@@ -63,17 +68,40 @@ class AuthClient {
 
     try {
       // Faça uma requisição para buscar os dados do usuário usando o token
-      const response = await api.get('/specialtyUser/getUser', {
+      const response = await api.get('/usuario/getUser', {
         headers: {
           Authorization: `Bearer ${token}`, // Envie o token no cabeçalho da requisição
         },
       });
 
+      if (!response.data?.specialty_id) {
+        localStorage.removeItem('spacialty-user-value');
+    localStorage.removeItem('custom-auth-token');
+    toast.error('Você não tem acesso a este sistema, entre em contato com o administrador!', {
+      position: 'top-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: {
+        backgroundColor: '#f56565', // Vermelho mais vibrante
+        color: '#fff',
+        fontWeight: 'bold',
+        border: '1px solid #c53030',
+        borderRadius: '8px',
+      },
+    });
+        return { data:  null }; // Retorna o erro como um objeto
+      }
+
       // Se a resposta contiver os dados do usuário, retorne-os
       if (response.data) {
         return { data: response.data as User }; // Converta a resposta para o tipo 'User'
       }
-        return { data: null }; // Se não encontrar o usuário, retorne null
+
+      return { data: null }; // Se não encontrar o usuário, retorne null
 
     } catch (error) {
       // Caso ocorra um erro, retorne a mensagem de erro

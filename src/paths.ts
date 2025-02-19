@@ -10,6 +10,7 @@ export const paths = {
     register: '/dashboard/register',
     specialty: '/dashboard/specialty',
     schedule: '/dashboard/schedule',
+    appointments: '/dashboard/appointments',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;
