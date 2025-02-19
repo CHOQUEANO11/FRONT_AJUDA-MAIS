@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -229,8 +230,7 @@ export default function RegisterProfessional() {
   };
 
 
-
-
+  const filteredUsers = userOrg.filter((user) => user?.specialty_id !== undefined);
 
   return (
     <Container maxWidth={false} sx={{ width: "100%", p: 3 }}>
@@ -373,48 +373,49 @@ export default function RegisterProfessional() {
               </TableRow>
             </TableHead>
             <TableBody>
-            {Array.isArray(userOrg) && userOrg.length > 0 ? (
-  userOrg
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    .map((professional, index) => (
-      <TableRow key={index}>
-        <TableCell>{professional?.name}</TableCell>
-        <TableCell>{professional?.email}</TableCell>
-        <TableCell>{professional?.phone}</TableCell>
-        <TableCell>{professional?.orgao_id?.name}</TableCell>
-        <TableCell>{professional?.specialty_id?.name}</TableCell>
-        <TableCell>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <MuiIconButton onClick={() => { handleEdit(professional); }}>
-              <EditIcon sx={{ color: "#03DAC6" }} />
-            </MuiIconButton>
-            <MuiIconButton onClick={() => { handleDelete(professional); }}>
-              <DeleteIcon sx={{ color: "#F44336" }} />
-            </MuiIconButton>
-          </Box>
-        </TableCell>
-      </TableRow>
-    ))
-) : (
-  <TableRow>
-    <TableCell colSpan={5} align="center">
-      Nenhum profissional cadastrado.
-    </TableCell>
-  </TableRow>
-)}
-
-            </TableBody>
+  {filteredUsers.length > 0 ? (
+    filteredUsers
+      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+      .map((professional, index) => (
+        <TableRow key={index}>
+          <TableCell>{professional?.name}</TableCell>
+          <TableCell>{professional?.email}</TableCell>
+          <TableCell>{professional?.phone}</TableCell>
+          <TableCell>{professional?.orgao_id?.name}</TableCell>
+          <TableCell>{professional?.specialty_id?.name}</TableCell>
+          <TableCell>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <MuiIconButton onClick={() => { handleEdit(professional); }}>
+                <EditIcon sx={{ color: "#03DAC6" }} />
+              </MuiIconButton>
+              <MuiIconButton onClick={() => handleDelete(professional)}>
+                <DeleteIcon sx={{ color: "#F44336" }} />
+              </MuiIconButton>
+            </Box>
+          </TableCell>
+        </TableRow>
+      ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={6} align="center">
+        Nenhum profissional com especialidade cadastrada.
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
           </Table>
         </TableContainer>
 
         {/* Paginação */}
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <Pagination
-            count={Math.ceil(professionals.length / itemsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="primary"
-          />
+        <Pagination
+  count={Math.ceil(filteredUsers.length / itemsPerPage)}
+  page={currentPage}
+  onChange={handlePageChange}
+  color="primary"
+/>
+
+
         </Box>
       </Box>
 
