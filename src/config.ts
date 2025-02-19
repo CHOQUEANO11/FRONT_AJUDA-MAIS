@@ -7,6 +7,6 @@ export interface Config {
 }
 
 export const config: Config = {
-  site: { name: 'AJUDA+', description: '', themeColor: '#090a0b', url: getSiteURL() },
+  site: { name: 'AJUDA+', description: 'Sistema de gerenciamento para atendimento psicológico', themeColor: '#090a0b', url: getSiteURL() },
   logLevel: (process.env.NEXT_PUBLIC_LOG_LEVEL as keyof typeof LogLevel) ?? LogLevel.ALL,
 };

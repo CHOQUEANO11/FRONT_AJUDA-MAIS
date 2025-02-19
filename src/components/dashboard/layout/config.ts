@@ -16,15 +16,15 @@ export const generateNavItems = (): NavItemConfig[] => {
   const userRole = user?.role;
 
   const items: NavItemConfig[] = [
-    // Item sempre visível
-    { key: 'schedule', title: 'Cadastrar Agenda', href: paths.dashboard.schedule, icon: 'calendar-dots' },
-    { key: 'appointment', title: 'Buscar agendamentos', href: paths.dashboard.appointments, icon: 'stethoscope' },
 
     // Itens condicionais com base no papel do usuário
     ...(userRole === 'master' ? [
       { key: 'register', title: 'Cadastrar Profissional', href: paths.dashboard.register, icon: 'firstAid' },
       { key: 'specialty', title: 'Cadastrar Especialidade', href: paths.dashboard.specialty, icon: 'stethoscope' },
     ] : []),
+    // Item sempre visível
+    { key: 'schedule', title: 'Cadastrar Agenda', href: paths.dashboard.schedule, icon: 'calendar-dots' },
+    { key: 'appointment', title: 'Buscar agendamentos', href: paths.dashboard.appointments, icon: 'stethoscope' },
   ];
 
   return items;
