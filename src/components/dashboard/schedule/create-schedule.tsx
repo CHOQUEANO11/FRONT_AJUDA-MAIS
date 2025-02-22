@@ -224,6 +224,13 @@ setToken(storedToken);
     setPage(0);
   };
 
+  const isHourBooked = (hour: string): boolean => {
+    // Verifica se algum agendamento contém o horário
+    return scheduleList.some((schedule) =>
+      schedule.hours.includes(hour) && dayjs(schedule.date).isSame(selectedDate, "day")
+    );
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
       <Card sx={{ maxWidth: 500, mx: "auto", p: 2, textAlign: "center" }}>
