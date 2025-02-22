@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -78,7 +78,7 @@ export default function RegisterProfessional() {
   });
 
   const [showForm, setShowForm] = React.useState(false);
-  const [professionals, ] = React.useState([]);
+  // const [professionals, ] = React.useState([]);
   const [specialty, setSpecialty] = React.useState<SpecialtyType[]>([]);
   const [userOrg, setUserOrg] = React.useState<any[]>([]);
   const [user, setUser] = React.useState<UserType>({});

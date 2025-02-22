@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -224,12 +225,12 @@ setToken(storedToken);
     setPage(0);
   };
 
-  const isHourBooked = (hour: string): boolean => {
-    // Verifica se algum agendamento contém o horário
-    return scheduleList.some((schedule) =>
-      schedule.hours.includes(hour) && dayjs(schedule.date).isSame(selectedDate, "day")
-    );
-  };
+  // const isHourBooked = (hour: string): boolean => {
+  //   // Verifica se algum agendamento contém o horário
+  //   return scheduleList.some((schedule) =>
+  //     schedule.hours.includes(hour) && dayjs(schedule.date).isSame(selectedDate, "day")
+  //   );
+  // };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
