@@ -150,10 +150,17 @@ setToken(storedToken);
         headers: { Authorization: `Bearer ${token1}` },
       });
 
+      if(response.status === 404) {
+        toast.error(response.data?.message);
+      }
+
       setScheduleList(response.data);
     } catch (error) {
+      // if(error) {
+      //   toast.error("Nenhum horário cadastrado.");
+      // }
       // console.error("Erro ao buscar horários:", error);
-      toast.error("Erro ao carregar horários");
+      // toast.error("Erro ao carregar horários");
     }
   };
 
@@ -314,7 +321,7 @@ setToken(storedToken);
                 ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3}>Sem agendamentos.</TableCell>
+                <TableCell colSpan={3}>Sem agenda.</TableCell>
               </TableRow>
             )}
           </TableBody>

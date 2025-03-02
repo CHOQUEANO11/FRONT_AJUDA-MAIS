@@ -8,6 +8,7 @@ import { XSquare } from '@phosphor-icons/react/dist/ssr/XSquare';
 import {Stethoscope} from '@phosphor-icons/react/dist/ssr/Stethoscope';
 import {FirstAid} from '@phosphor-icons/react/dist/ssr/FirstAid'
 import {CalendarDots} from '@phosphor-icons/react/dist/ssr/CalendarDots'
+import { ClockUser } from '@phosphor-icons/react/dist/ssr/ClockUser';
 
 export const navIcons = {
   'chart-pie': ChartPieIcon,
@@ -17,6 +18,7 @@ export const navIcons = {
   'stethoscope': Stethoscope,
   'firstAid': FirstAid,
   'calendar-dots': CalendarDots,
+  'clock-user': ClockUser,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

@@ -25,7 +25,7 @@ export const generateNavItems = (): NavItemConfig[] => {
     ] : []),
     // Item sempre visível
     { key: 'schedule', title: 'Cadastrar Agenda', href: paths.dashboard.schedule, icon: 'calendar-dots' },
-    { key: 'appointment', title: 'Buscar agendamentos', href: paths.dashboard.appointments, icon: 'stethoscope' },
+    { key: 'appointment', title: 'Buscar agendamentos', href: paths.dashboard.appointments, icon: 'clock-user' },
   ];
 
   return items;
