@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client';
@@ -13,7 +18,8 @@ import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
-
+import Api from '../../../lib/api'
+import { toast, ToastContainer } from 'react-toastify';
 import { usePopover } from '@/hooks/use-popover';
 
 import { MobileNav } from './mobile-nav';
@@ -23,7 +29,32 @@ import { UserPopover } from './user-popover';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
+  const [openAppointments, setOpenAppointments] = React.useState(0);
+  const [user, setUser] = React.useState<unknown | null>(null);
   const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
+
+
+  React.useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
+    setUser(userData);
+
+    if (userData?._id) {
+      fetchAppointments(userData._id);
+    }
+  }, []);
+
+  const fetchAppointments = async (userId: string) => {
+    try {
+      const token = localStorage.getItem('custom-auth-token');
+      const response = await Api.get(`/appointment/appointments/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOpenAppointments(response.data.filter((appointment: { status: string; }) => appointment.status === "aberta").length);
+      // console.log('VALOR', response.data);
+    } catch (error) {
+      toast.error('Erro ao carregar agendamentos');
+    }
+  };// Chamada ao montar o componente
   // console.log('PP', dados?.photo)
 
   const userPopover = usePopover<HTMLDivElement>();
@@ -66,13 +97,17 @@ export function MainNav(): React.JSX.Element {
                 <UsersIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Notifications">
-              <Badge badgeContent={4} color="success" variant="dot">
-                <IconButton>
-                  <BellIcon />
-                </IconButton>
-              </Badge>
-            </Tooltip>
+            <Tooltip title="Notificações">
+      <Badge
+        badgeContent={openAppointments > 0 ? openAppointments : null}
+        color="success"
+        variant={openAppointments > 0 ? "standard" : "dot"}
+      >
+        <IconButton>
+          <BellIcon />
+        </IconButton>
+      </Badge>
+    </Tooltip>
             <span>Olá Dr. {dados?.name}</span>
             <Avatar
               onClick={userPopover.handleOpen}
@@ -82,6 +117,7 @@ export function MainNav(): React.JSX.Element {
             />
           </Stack>
         </Stack>
+        <ToastContainer />
       </Box>
       <UserPopover anchorEl={userPopover.anchorRef.current} onClose={userPopover.handleClose} open={userPopover.open} />
       <MobileNav

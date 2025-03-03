@@ -219,7 +219,7 @@ function Appointments() {
         setOpenEmotionModal(true);
         // console.log('CC', response.data);
       } catch (error) {
-        toast.error('Erro ao buscar diário de emoções.');
+        // toast.error('Erro ao buscar diário de emoções.');
       }
     }
   };
@@ -423,17 +423,25 @@ function Appointments() {
               },
             }}
           >
-            <Button variant="contained" onClick={handleSaveMedicalRecord}>
-              Salvar
-            </Button>
+            <>
+            <Button variant="contained" onClick={() => handleSaveMedicalRecord()}>
+  Salvar
+</Button>
+
 
             <Button
-              variant="contained"
-              sx={{ backgroundColor: 'red', color: 'white' }}
-              onClick={() => selectedAppointment?._id && handleCancelAppointment(selectedAppointment._id)}
-            >
-              Paciente não compareceu
-            </Button>
+  variant="contained"
+  sx={{ backgroundColor: 'red', color: 'white' }}
+  onClick={() => {
+    if (selectedAppointment?._id) {
+      handleCancelAppointment(selectedAppointment._id);
+    }
+  }}
+>
+  Paciente não compareceu
+</Button>
+
+            </>
           </Box>
         </Box>
       </Modal>
