@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/prefer-reduce-type-parameter */
 /* eslint-disable react/hook-use-state */
 /* eslint-disable react/jsx-no-leaked-render */
@@ -38,6 +39,7 @@ import dayjs from 'dayjs';
 import { toast, ToastContainer } from 'react-toastify';
 
 import api from '@/lib/api';
+import io from 'socket.io-client';
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -84,6 +86,8 @@ interface Emotion {
   created_at: Date;
 }
 
+const socket = io('https://api-ajuda-mais.onrender.com');
+
 function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [page] = useState(0);
@@ -95,6 +99,34 @@ function Appointments() {
   const [newRecord, setNewRecord] = useState('');
   const [openEmotionModal, setOpenEmotionModal] = useState(false);
   const [emotions, setEmotions] = useState<Emotion[]>([]);
+  // const [appointments, setAppointments] = useState([]);
+
+
+  useEffect(() => {
+    socket.on('appointmentUpdated', () => {
+      if (user?._id) {
+        fetchAppointments(user._id); // Recarrega os agendamentos sempre que um evento chegar
+      }
+    });
+
+    return () => {
+      socket.off('appointmentUpdated'); // Evita múltiplas conexões
+    };
+  }, [user]);
+
+
+  // useEffect(() => {
+  //   // Conectar ao Socket.IO
+  //   socket.on('appointmentUpdated', (data) => {
+  //     console.log('DATA', data);
+  //     // Atualizar a lista de agendamentos (por exemplo, buscando os novos agendamentos ou atualizando o estado)
+  //     setAppointments((prevAppointments) => [...prevAppointments, data.appointment]);
+  //   });
+
+  //   return () => {
+  //     socket.off('appointmentUpdated'); // Limpeza do socket quando o componente for desmontado
+  //   };
+  // }, []);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');

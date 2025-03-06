@@ -1,4 +1,14 @@
-import * as React from 'react';
+/* eslint-disable import/no-named-as-default-member */
+
+
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// import * as React from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 // import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -15,12 +25,33 @@ import TableRow from '@mui/material/TableRow';
 // import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import dayjs from 'dayjs';
 import "dayjs/locale/pt-br";
+import { toast } from 'react-toastify';
+import api from '@/lib/api'
+
+dayjs.locale('pt-br');
 
 const statusMap = {
-  pendente: { label: 'Pendente', color: 'warning' },
-  realizado: { label: 'Realizado', color: 'success' },
-  cancelado: { label: 'Cancelado', color: 'error' },
+  aberta: { label: 'Aberta', color: 'success' },
+  realizada: { label: 'Realizada', color: 'primary' },
+  cancelada: { label: 'Cancelada', color: 'error' },
 } as const;
+
+export interface Appointment {
+  _id: string;
+  createdAt: string;
+  date: string;
+  hour: string;
+  orgao_id: { name: string };
+  specialist_id: { name: string; email: string; phone: string };
+  specialty_id: { name: string };
+  status: 'aberta' | 'realizada' | 'cancelada';
+  user_id: { name: string; email: string; phone: string };
+}
+
+export interface LatestAppointmentsProps {
+  appointments?: Appointment[];
+  sx?: SxProps;
+}
 
 export interface Order {
   id: string;
@@ -36,9 +67,33 @@ export interface LatestOrdersProps {
 }
 
 export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.Element {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [user, setUser] = useState<{ _id: string } | null>(null);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
+    setUser(userData);
+
+    if (userData?._id) {
+      fetchAppointments(userData._id);
+    }
+  }, []);
+
+  const fetchAppointments = async (userId: string) => {
+    try {
+      const token = localStorage.getItem('custom-auth-token');
+      const response = await api.get(`/appointment/appointments/specialist/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAppointments(response.data);
+    } catch (error) {
+      toast.error('Erro ao carregar agendamentos');
+    }
+  };
+
   return (
     <Card sx={sx}>
-      <CardHeader title="Meus atendimentos" />
+      <CardHeader title="Meus Atendimentos" />
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: 800 }}>
@@ -46,19 +101,27 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
             <TableRow>
               <TableCell>Nº</TableCell>
               <TableCell>Usuário</TableCell>
-              <TableCell sortDirection="desc">Data</TableCell>
+              <TableCell>Órgão</TableCell>
+              <TableCell>Especialista</TableCell>
+              <TableCell>Especialidade</TableCell>
+              <TableCell>Data</TableCell>
+              <TableCell>Hora</TableCell>
               <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order) => {
-              const { label, color } = statusMap[order.status] ?? { label: 'Unknown', color: 'default' };
+            {appointments.map((appointment, index) => {
+              const { label, color } = statusMap[appointment.status] ?? { label: 'Desconhecido', color: 'default' };
 
               return (
-                <TableRow hover key={order.id}>
-                  <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.customer.name}</TableCell>
-                  <TableCell>{dayjs(order.createdAt).locale('pt-br').format('D [de] MMMM, YYYY')}</TableCell>
+                <TableRow hover key={appointment._id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{appointment.user_id.name}</TableCell>
+                  <TableCell>{appointment.orgao_id.name}</TableCell>
+                  <TableCell>{appointment.specialist_id.name}</TableCell>
+                  <TableCell>{appointment.specialty_id.name}</TableCell>
+                  <TableCell>{dayjs(appointment.date).format('DD [de] MMMM [de] YYYY')}</TableCell>
+                  <TableCell>{appointment.hour}</TableCell>
                   <TableCell>
                     <Chip color={color} label={label} size="small" />
                   </TableCell>
@@ -69,16 +132,6 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
         </Table>
       </Box>
       <Divider />
-      {/* <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button
-          color="inherit"
-          endIcon={<ArrowRightIcon fontSize="var(--icon-fontSize-md)" />}
-          size="small"
-          variant="text"
-        >
-          View all
-        </Button>
-      </CardActions> */}
     </Card>
   );
 }

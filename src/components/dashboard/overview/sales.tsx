@@ -1,48 +1,101 @@
+
+
+
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 'use client';
 
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-// import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-// import Divider from '@mui/material/Divider';
 import { alpha, useTheme } from '@mui/material/styles';
 import type { SxProps } from '@mui/material/styles';
 import { ArrowClockwise as ArrowClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowClockwise';
-// import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import type { ApexOptions } from 'apexcharts';
-
 import { Chart } from '@/components/core/chart';
+import api from '@/lib/api';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
+import { toast } from 'react-toastify';
 
-export interface SalesProps {
+dayjs.locale('pt-br');
+
+ interface SalesProps {
   chartSeries: { name: string; data: number[] }[];
   sx?: SxProps;
 }
 
-export function Sales({ chartSeries, sx }: SalesProps): React.JSX.Element {
-  const chartOptions = useChartOptions();
+export function Sales({ sx }: SalesProps): React.JSX.Element {
+  const [localChartSeries, setLocalChartSeries] = useState<{ name: string; data: number[] }[]>([
+    { name: 'Este ano', data: [] },
+    { name: 'Ano passado', data: [] }
+  ]);
+
+  const theme = useTheme();
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const fetchAppointments = async () => {
+    try {
+      const token = localStorage.getItem('custom-auth-token');
+      const response = await api.get('/appointment/appointments', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      processAppointments(response.data);
+
+      // const data = response.data; // Ajuste conforme a resposta da API
+
+      // const thisYearData = data.map((item: any) => item.date); // Exemplo
+      // const lastYearData = data.map((item: any) => item.date); // Exemplo
+
+      // setLocalChartSeries([
+      //   { name: 'Este ano', data: thisYearData },
+      //   { name: 'Ano passado', data: lastYearData }
+      // ]);
+    } catch (error) {
+      toast.error('Erro ao carregar atendimentos');
+    }
+  };
+
+  const processAppointments = (appointments: any[]) => {
+    const monthlyCounts = Array(12).fill(0);
+
+    appointments.forEach((appointment) => {
+      const month = dayjs(appointment.date).month();
+      monthlyCounts[month] += 1;
+    });
+
+    setLocalChartSeries([{ name: 'Atendimentos', data: monthlyCounts }]);
+  };
 
   return (
     <Card sx={sx}>
       <CardHeader
         action={
-          <Button color="inherit" size="small" startIcon={<ArrowClockwiseIcon fontSize="var(--icon-fontSize-md)" />}>
+          <Button color="inherit" size="small" startIcon={<ArrowClockwiseIcon fontSize="var(--icon-fontSize-md)" />} onClick={fetchAppointments}>
             Atualizar
           </Button>
         }
-        title="Total atendimento"
+        title="Total de Atendimentos"
       />
       <CardContent>
-        <Chart height={350} options={chartOptions} series={chartSeries} type="bar" width="100%" />
+        <Chart height={350} options={useChartOptions(theme)} series={localChartSeries} type="bar" width="100%" />
       </CardContent>
     </Card>
   );
 }
 
-function useChartOptions(): ApexOptions {
-  const theme = useTheme();
-
+function useChartOptions(theme: any): ApexOptions {
   return {
     chart: { background: 'transparent', stacked: false, toolbar: { show: false } },
     colors: [theme.palette.primary.main, alpha(theme.palette.primary.main, 0.25)],
@@ -65,11 +118,14 @@ function useChartOptions(): ApexOptions {
       labels: { offsetY: 5, style: { colors: theme.palette.text.secondary } },
     },
     yaxis: {
+      min: 0,
+      forceNiceScale: true,
       labels: {
-        formatter: (value) => (value > 0 ? `${value}` : `${value}`),
+        formatter: (value) => Math.floor(value).toString(),
         offsetX: -2,
         style: { colors: theme.palette.text.secondary },
       },
     },
   };
 }
+
