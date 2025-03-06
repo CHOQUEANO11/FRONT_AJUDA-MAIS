@@ -108,10 +108,11 @@ function Appointments() {
   const fetchAppointments = async (userId: string) => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const response = await api.get(`/appointment/appointments/user/${userId}`, {
+      const response = await api.get(`/appointment/appointments/specialist/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAppointments(response.data);
+      // console.log('AGEND', response.data)
     } catch (error) {
       toast.error('Erro ao carregar agendamentos');
     }

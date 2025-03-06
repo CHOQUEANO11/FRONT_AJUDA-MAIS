@@ -46,7 +46,7 @@ export function MainNav(): React.JSX.Element {
   const fetchAppointments = async (userId: string) => {
     try {
       const token = localStorage.getItem('custom-auth-token');
-      const response = await Api.get(`/appointment/appointments/user/${userId}`, {
+      const response = await Api.get(`/appointment/appointments/specialist/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOpenAppointments(response.data.filter((appointment: { status: string; }) => appointment.status === "aberta").length);
