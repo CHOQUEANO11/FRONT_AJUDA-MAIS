@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/prefer-reduce-type-parameter */
 /* eslint-disable react/hook-use-state */
 /* eslint-disable react/jsx-no-leaked-render */
@@ -29,6 +28,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  Pagination,
   TableRow,
   TextField,
   Typography,
@@ -37,9 +37,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { toast, ToastContainer } from 'react-toastify';
+import io from 'socket.io-client';
 
 import api from '@/lib/api';
-import io from 'socket.io-client';
 
 // import DeleteIcon from "@mui/icons-material/Delete";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -90,8 +90,8 @@ const socket = io('https://api-ajuda-mais.onrender.com');
 
 function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [page] = useState(0);
-  const [rowsPerPage] = useState(50);
+  const [page, setPage] = useState(0); // Manter o estado da página
+  const [rowsPerPage] = useState(5); // Número de itens por página
   const [user, setUser] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -100,7 +100,6 @@ function Appointments() {
   const [openEmotionModal, setOpenEmotionModal] = useState(false);
   const [emotions, setEmotions] = useState<Emotion[]>([]);
   // const [appointments, setAppointments] = useState([]);
-
 
   useEffect(() => {
     socket.on('appointmentUpdated', () => {
@@ -113,20 +112,6 @@ function Appointments() {
       socket.off('appointmentUpdated'); // Evita múltiplas conexões
     };
   }, [user]);
-
-
-  // useEffect(() => {
-  //   // Conectar ao Socket.IO
-  //   socket.on('appointmentUpdated', (data) => {
-  //     console.log('DATA', data);
-  //     // Atualizar a lista de agendamentos (por exemplo, buscando os novos agendamentos ou atualizando o estado)
-  //     setAppointments((prevAppointments) => [...prevAppointments, data.appointment]);
-  //   });
-
-  //   return () => {
-  //     socket.off('appointmentUpdated'); // Limpeza do socket quando o componente for desmontado
-  //   };
-  // }, []);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
@@ -298,6 +283,10 @@ function Appointments() {
   // Chama a função corretamente
   const { mostFrequentEmotion, percentage, description } = calculateEmotionStats();
 
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
       <TableContainer component={Paper} sx={{ width: '100%', mt: 4, overflowX: 'auto' }}>
@@ -365,6 +354,16 @@ function Appointments() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      <Pagination
+        count={Math.ceil(appointments.length / rowsPerPage)} // Ajusta a quantidade de páginas de acordo com o número total de agendamentos
+        page={page + 1} // A página começa de 1
+        onChange={(event, value) => setPage(value - 1)} // Atualiza a página corretamente, subtraindo 1 pois a página começa de 0
+        color="primary"
+      />
+    </Box>
+
 
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -457,79 +456,77 @@ function Appointments() {
             }}
           >
             <>
-            <Button variant="contained" onClick={() => handleSaveMedicalRecord()}>
-  Salvar
-</Button>
+              <Button variant="contained" onClick={() => handleSaveMedicalRecord()}>
+                Salvar
+              </Button>
 
-
-            <Button
-  variant="contained"
-  sx={{ backgroundColor: 'red', color: 'white' }}
-  onClick={() => {
-    if (selectedAppointment?._id) {
-      handleCancelAppointment(selectedAppointment._id);
-    }
-  }}
->
-  Paciente não compareceu
-</Button>
-
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: 'red', color: 'white' }}
+                onClick={() => {
+                  if (selectedAppointment?._id) {
+                    handleCancelAppointment(selectedAppointment._id);
+                  }
+                }}
+              >
+                Paciente não compareceu
+              </Button>
             </>
           </Box>
         </Box>
       </Modal>
       <Modal open={openEmotionModal} onClose={handleCloseEmotionModal}>
-  <>
-    <Box
-      sx={{
-        p: 3,
-        backgroundColor: 'white',
-        width: '60%', // Ajuste da largura para ser mais responsivo
-        maxWidth: 600, // Limite máximo da largura
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        borderRadius: 2,
-        maxHeight: '55vh', // Definindo a altura máxima para que o conteúdo não ultrapasse a tela
-        overflowY: 'auto', // Permite rolagem se o conteúdo for maior que a altura do modal
-      }}
-    >
-      <Typography align="center" variant="h5">
-        Diário de Emoções
-      </Typography>
-      <Box sx={{ mt: 2 }}>
-        {emotions.length > 0 ? (
-          emotions.map((emotion) => (
-            <Box key={emotion._id} sx={{ p: 1, backgroundColor: '#f9f9f9', borderRadius: 1, mb: 1 }}>
-              <Typography>{emotion.name}</Typography>
-              <Typography>{emotion.description}</Typography>
-              <Typography variant="caption">{dayjs(emotion.created_at).format('DD/MM/YYYY HH:mm')}</Typography>
+        <>
+          <Box
+            sx={{
+              p: 3,
+              backgroundColor: 'white',
+              width: '60%', // Ajuste da largura para ser mais responsivo
+              maxWidth: 600, // Limite máximo da largura
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              borderRadius: 2,
+              maxHeight: '55vh', // Definindo a altura máxima para que o conteúdo não ultrapasse a tela
+              overflowY: 'auto', // Permite rolagem se o conteúdo for maior que a altura do modal
+            }}
+          >
+            <Typography align="center" variant="h5">
+              Diário de Emoções
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              {emotions.length > 0 ? (
+                emotions.map((emotion) => (
+                  <Box key={emotion._id} sx={{ p: 1, backgroundColor: '#f9f9f9', borderRadius: 1, mb: 1 }}>
+                    <Typography>{emotion.name}</Typography>
+                    <Typography>{emotion.description}</Typography>
+                    <Typography variant="caption">{dayjs(emotion.created_at).format('DD/MM/YYYY HH:mm')}</Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography>Nenhuma emoção registrada.</Typography>
+              )}
             </Box>
-          ))
-        ) : (
-          <Typography>Nenhuma emoção registrada.</Typography>
-        )}
-      </Box>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <Button variant="contained" onClick={handleCloseEmotionModal}>
-          Fechar
-        </Button>
-      </Box>
-    </Box>
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={handleCloseEmotionModal}>
+                Fechar
+              </Button>
+            </Box>
+          </Box>
 
-    {mostFrequentEmotion && percentage && description && (
-      <Box sx={{ mt: 2, p: 2, backgroundColor: '#eef2ff', borderRadius: 2, textAlign: 'center' }}>
-        <Typography variant="h6">Análise Emocional</Typography>
-        <Typography>
-          A emoção mais frequente foi <strong>{mostFrequentEmotion}</strong>, aparecendo em{' '}
-          <strong>{percentage}%</strong> dos registros.
-        </Typography>
-        <Typography sx={{ mt: 1 }}>{description}</Typography>
-      </Box>
-    )}
-  </>
-</Modal>
+          {mostFrequentEmotion && percentage && description && (
+            <Box sx={{ mt: 2, p: 2, backgroundColor: '#eef2ff', borderRadius: 2, textAlign: 'center' }}>
+              <Typography variant="h6">Análise Emocional</Typography>
+              <Typography>
+                A emoção mais frequente foi <strong>{mostFrequentEmotion}</strong>, aparecendo em{' '}
+                <strong>{percentage}%</strong> dos registros.
+              </Typography>
+              <Typography sx={{ mt: 1 }}>{description}</Typography>
+            </Box>
+          )}
+        </>
+      </Modal>
 
       <ToastContainer />
     </LocalizationProvider>
