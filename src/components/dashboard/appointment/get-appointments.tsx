@@ -91,7 +91,7 @@ const socket = io('https://api-ajuda-mais.onrender.com');
 function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [page] = useState(0);
-  const [rowsPerPage] = useState(5);
+  const [rowsPerPage] = useState(50);
   const [user, setUser] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
