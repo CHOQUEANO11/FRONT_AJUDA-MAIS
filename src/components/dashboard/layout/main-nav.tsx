@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+
+
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -24,13 +24,14 @@ import { usePopover } from '@/hooks/use-popover';
 
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
+import io from 'socket.io-client';
 
 
-
+const socket = io('https://api-ajuda-mais.onrender.com');
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
   const [openAppointments, setOpenAppointments] = React.useState(0);
-  const [user, setUser] = React.useState<unknown | null>(null);
+  const [user, setUser] = React.useState<{ _id: string } | null>(null);
   const dados = JSON.parse(localStorage.getItem('spacialty-user-value') ?? 'null');
 
 
@@ -42,6 +43,19 @@ export function MainNav(): React.JSX.Element {
       fetchAppointments(userData._id);
     }
   }, []);
+
+
+  React.useEffect(() => {
+    socket.on('appointmentUpdated', () => {
+      if (user?._id) {
+        fetchAppointments(user._id); // Recarrega os agendamentos sempre que um evento chegar
+      }
+    });
+
+    return () => {
+      socket.off('appointmentUpdated'); // Evita múltiplas conexões
+    };
+  }, [user]);
 
   const fetchAppointments = async (userId: string) => {
     try {

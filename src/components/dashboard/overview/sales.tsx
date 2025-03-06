@@ -1,6 +1,4 @@
-
-
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
@@ -12,6 +10,7 @@
 
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -28,21 +27,27 @@ import { toast } from 'react-toastify';
 
 dayjs.locale('pt-br');
 
- interface SalesProps {
-  chartSeries: { name: string; data: number[] }[];
+const socket = io('https://api-ajuda-mais.onrender.com');
+
+interface SalesProps {
+  chartSeries?: { name: string; data: number[] }[];
   sx?: SxProps;
 }
 
-export function Sales({ sx }: SalesProps): React.JSX.Element {
+export function Sales({ chartSeries = [], sx }: SalesProps): React.JSX.Element {
   const [localChartSeries, setLocalChartSeries] = useState<{ name: string; data: number[] }[]>([
-    { name: 'Este ano', data: [] },
-    { name: 'Ano passado', data: [] }
+    { name: 'Atendimentos', data: Array(12).fill(0) }
   ]);
 
   const theme = useTheme();
 
   useEffect(() => {
     fetchAppointments();
+    socket.on('appointmentUpdated', fetchAppointments);
+
+    return () => {
+      socket.off('appointmentUpdated', fetchAppointments);
+    };
   }, []);
 
   const fetchAppointments = async () => {
@@ -52,16 +57,6 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
         headers: { Authorization: `Bearer ${token}` },
       });
       processAppointments(response.data);
-
-      // const data = response.data; // Ajuste conforme a resposta da API
-
-      // const thisYearData = data.map((item: any) => item.date); // Exemplo
-      // const lastYearData = data.map((item: any) => item.date); // Exemplo
-
-      // setLocalChartSeries([
-      //   { name: 'Este ano', data: thisYearData },
-      //   { name: 'Ano passado', data: lastYearData }
-      // ]);
     } catch (error) {
       toast.error('Erro ao carregar atendimentos');
     }
@@ -69,12 +64,10 @@ export function Sales({ sx }: SalesProps): React.JSX.Element {
 
   const processAppointments = (appointments: any[]) => {
     const monthlyCounts = Array(12).fill(0);
-
     appointments.forEach((appointment) => {
       const month = dayjs(appointment.date).month();
       monthlyCounts[month] += 1;
     });
-
     setLocalChartSeries([{ name: 'Atendimentos', data: monthlyCounts }]);
   };
 
@@ -128,4 +121,3 @@ function useChartOptions(theme: any): ApexOptions {
     },
   };
 }
-

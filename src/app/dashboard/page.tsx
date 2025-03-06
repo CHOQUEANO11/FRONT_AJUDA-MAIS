@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import Grid from '@mui/material/Unstable_Grid2';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 import { config } from '@/config';
 import { Budget } from '@/components/dashboard/overview/budget';
@@ -31,13 +31,7 @@ export default function Page(): React.JSX.Element {
         <TotalProfit sx={{ height: '100%' }} value="7" />
       </Grid>
       <Grid lg={12} xs={12}>
-        <Sales
-          chartSeries={[
-            { name: 'This year', data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20] },
-            { name: 'Last year', data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13] },
-          ]}
-          sx={{ height: '100%' }}
-        />
+      <Sales sx={{ height: '400px' }} />
       </Grid>
       {/* <Grid lg={4} md={6} xs={12}>
         <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
@@ -81,50 +75,7 @@ export default function Page(): React.JSX.Element {
       </Grid> */}
       <Grid lg={12} md={12} xs={12}>
         <LatestOrders
-          orders={[
-            {
-              id: '01',
-              customer: { name: 'Nilson Silva' },
-              amount: 30.5,
-              status: 'pendente',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: '02',
-              customer: { name: 'Thiago Cardoso' },
-              amount: 25.1,
-              status: 'realizado',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: '03',
-              customer: { name: 'Rafhael Monteiro' },
-              amount: 10.99,
-              status: 'cancelado',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: '04',
-              customer: { name: 'Paulo Afonso' },
-              amount: 96.43,
-              status: 'pendente',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: '05',
-              customer: { name: 'Carolina Dantas' },
-              amount: 32.54,
-              status: 'realizado',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: '06',
-              customer: { name: 'Ana Patricia' },
-              amount: 16.76,
-              status: 'realizado',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-          ]}
+
           sx={{ height: '100%' }}
         />
       </Grid>

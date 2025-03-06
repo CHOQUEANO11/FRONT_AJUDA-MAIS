@@ -8,11 +8,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import * as React from 'react';
 'use client'
+
 import React, { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-// import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
@@ -22,13 +22,14 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-// import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
 import dayjs from 'dayjs';
 import "dayjs/locale/pt-br";
 import { toast } from 'react-toastify';
-import api from '@/lib/api'
+import api from '@/lib/api';
 
 dayjs.locale('pt-br');
+
+const socket = io('https://api-ajuda-mais.onrender.com');
 
 const statusMap = {
   aberta: { label: 'Aberta', color: 'success' },
@@ -53,20 +54,7 @@ export interface LatestAppointmentsProps {
   sx?: SxProps;
 }
 
-export interface Order {
-  id: string;
-  customer: { name: string };
-  amount: number;
-  status: 'pendente' | 'realizado' | 'cancelado';
-  createdAt: Date;
-}
-
-export interface LatestOrdersProps {
-  orders?: Order[];
-  sx?: SxProps;
-}
-
-export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.Element {
+export function LatestOrders({ sx }: LatestAppointmentsProps): React.JSX.Element {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [user, setUser] = useState<{ _id: string } | null>(null);
 
@@ -77,6 +65,16 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
     if (userData?._id) {
       fetchAppointments(userData._id);
     }
+
+    socket.on('appointmentUpdated', () => {
+      if (userData?._id) {
+        fetchAppointments(userData._id);
+      }
+    });
+
+    return () => {
+      socket.off('appointmentUpdated');
+    };
   }, []);
 
   const fetchAppointments = async (userId: string) => {
@@ -135,3 +133,4 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
     </Card>
   );
 }
+
